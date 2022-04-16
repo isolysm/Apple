@@ -9,5 +9,7 @@ Well, there's a few reasons behind this:
 * Isolysm's mods are planned having more fancy UIs.
 * This is mainly a project for me to expand upon our knowledge of LWJGL and OpenGL
 
+This is **NOT** for outside use. We won't give support for this mod. 
+
 ## Warnings
 This mod is very experimental! You will experience crashes. 
