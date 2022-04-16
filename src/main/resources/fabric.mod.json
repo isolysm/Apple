@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "modernmenu",
+  "name": "Modern Menu",
+  "version": "1.0.0",
+  "environment": "client",
+  "license": "GPL-3.0",
+  "mixins": [
+
+  ]
+}
