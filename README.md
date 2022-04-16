@@ -1,2 +1,2 @@
 # ModernMenu
-The most modern menu out there currently.
+The most modern menu out for no reason.
