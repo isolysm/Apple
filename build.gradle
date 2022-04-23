@@ -6,6 +6,7 @@ buildscript {
     def forge = project.name.endsWith("-forge")
     def fabric = project.name.endsWith("-fabric")
     def quilt = project.name.endsWith("-quilt")
+    project.ext.mcVersionStr = mcVersionStr
     project.ext.mcVersion = mcVersion
     project.ext.forge = forge
     project.ext.fabric = fabric
@@ -29,10 +30,171 @@ buildscript {
     }
     dependencies {
         if (quilt) {
-
+            classpath ''
+        } else if (fabric){
+            classpath 'fabric-loom:fabric-loom.gradle.plugin:0.12-SNAPSHOT'
+        } else if (mcVersion >= 11400) {
+            classpath('net.minecraftforge.gradle:ForgeGradle:3.+') {
+                exclude group: 'trove', module: 'trove' // preprocessor/idea requires more recent one
+            }
+            classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        } else if (mcVersion >= 10800) {
+            classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+            classpath('com.github.ReplayMod:ForgeGradle:' + (
+                    mcVersion >= 11200 ? '717a9f4' : // FG 2.3
+                            mcVersion >= 10904 ? '5c1f53d' : // FG 2.2
+                                    'ceb83c0'   // FG 2.1
+            ) + ':all')
+        } else {
+            classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+            classpath 'com.github.ReplayMod:ForgeGradle:a8a9e0ca' // FG 1.2
         }
-        if (fabric){
+        classpath 'gradle.plugin.com.github.johnrengelman:shadow:7.1.0'
+    }
+}
 
+def QUILT = quilt
+def FABRIC = fabric
+def FORGE = forge
+def FG2 = mcVersion <= 11200
+def FG3 = !fabric && mcVersion >= 11400
+
+if (mcVersion >= 10800) {
+    if (QUILT) {
+        apply plugin: 'org.quiltmc.loom'
+    } else if (FABRIC) {
+        applu plugin: 'fabric-loom'
+    } else if (FG3){
+        apply plugin: 'net.minecraftforge.gradle'
+    } else if (FORGE){
+        'net.minecraftforge.gradle.forge'
+    }
+} else {
+    apply plugin: 'forge'
+}
+
+apply plugin: 'com.replaymod.preprocess'
+apply plugin: 'maven-publish'
+
+mcVersion = project.ext.mcVersion
+def mcVersionStr = "${(int) (mcVersion / 10000)}.${(int) (mcVersion / 100) % 100}" + (mcVersion % 100 == 0 ? '' : ".${mcVersion % 100}")
+
+sourceCompatibility = targetCompatibility = mcVersion >= 11800 ? 17 : mcVersion >= 11700 ? 16 : 1.8
+tasks.withType(JavaCompile).configureEach {
+    options.release = mcVersion >= 11800 ? 17 : mcVersion >= 11700 ? 16 : 8
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = mcVersion >= 11700 ? 16 : 1.8
+        freeCompilerArgs = ["-Xjvm-default=all", "-Xopt-in=kotlin.time.ExperimentalTime"]
+    }
+}
+
+version = project.name + '-' + rootProject.version
+group= "dev.myosyn.apple"
+archivesBaseName = "Apple"
+
+preprocess {
+    vars.put("MC", mcVersion)
+    vars.put("QUILT", QUILT ? 1 : 0)
+    vars.put("FABRIC", FABRIC ? 1 : 0)
+    vars.put("FORGE", FORGE ? 1 : 0)
+}
+
+minecraft {
+    minecraft 'com.mojang:minecraft:' + [
+            10710: '1.7.10',
+            10809: '1.8.9',
+            11202: '1.12.2',
+            11404: '1.14.4',
+            11502: '1.15.2',
+            11604: '1.16.4',
+            11701: '1.17.1',
+            11801: '1.18.1',
+            11802: '1.18.2',
+    ][mcVersion]
+}
+
+repositories {
+    mavenLocal()
+    maven {"https://repo.spongepowered.org/maven/"}
+    maven {"https://maven.fabricmc.net/"}
+    maven {
+        url = "https://jitpack.io"
+        content {
+            includeGroupByRegex 'com\\.github\\..*'
+        }
+    }
+    maven {"https://repo.essential.gg/repositories/maven-public"}
+}
+
+configurations {
+    shade
+    shadow
+}
+
+def shadeExclusions = {
+    exclude group: 'com.google.guava', module: 'guava-jdk5'
+    exclude group: 'com.google.guava', module: 'guava'
+    exclude group: 'com.google.code.gson', module: 'gson'
+}
+
+dependencies {
+    if (QUILT) {
+        minecraft 'com.mojang:minecraft:' + [
+                11404: '1.14.4',
+                11502: '1.15.2',
+                11604: '1.16.4',
+                11701: '1.17.1',
+                11801: '1.18.1',
+                11802: '1.18.2',
+        ][mcVersion]
+        def quiltApiModules = [
+
+        ][mcVersion]
+    }
+    if (FABRIC) {
+        minecraft 'com.mojang:minecraft:' + [
+                11404: '1.14.4',
+                11502: '1.15.2',
+                11604: '1.16.4',
+                11701: '1.17.1',
+                11801: '1.18.1',
+                11802: '1.18.2',
+        ][mcVersion]
+        mappings 'net.fabricmc:yarn:' + [
+                11404: '1.14.4+build.18',
+                11502: '1.15.2+build.17',
+                11604: '1.16.4+build.9',
+                11701: '1.17.1+build.65',
+                11801: '1.18.1+build.22',
+                11802: '1.18.2+build.3'
+        ][mcVersion]
+        modimplementation 'net.fabricmc:fabric-loader:0.13.3'
+        def fabricApiVersion = [
+                11404: '0.28.5+1.14',
+                11502: '0.28.5+1.15',
+                11604: '0.42.0+1.16',
+                11701: '0.46.1+1.17',
+                11801: '0.46.6+1.18',
+                11802: '0.51.1+1.18.2',
+        ][mcVersion]
+        def fabricApiModules = [
+                "api-base",
+                "networking-v0",
+                "keybindings-v0",
+                "resource-loader-v0",
+        ]
+
+        if (mcVersion >= 11600) {
+            fabricApiModules.add("key-binding-api-v1")
+        }
+
+        print(mcVersion)
+        fabricApiModules.each {module ->
+            modImplementation fabricApi.module("fabric-$module", fabricApiVersion)
+            include fabricApi.module("fabric-$module", fabricApiVersion)
         }
     }
 }

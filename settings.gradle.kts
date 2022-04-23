@@ -4,16 +4,12 @@ pluginManagement {
         maven("https://maven.fabricmc.net")
         maven("https://maven.quiltmc.org/repository/release")
         maven("https://maven.quiltmc.org/repository/snapshot")
+        maven("https://maven.minecraftforge.net")
         maven("https://server.bbkr.space/artifactory/libs-release/")
         gradlePluginPortal()
     }
     resolutionStrategy {
         eachPlugin {
-            when (requested.id.id) {
-                "org.jetbrains.dokka" -> {
-                    useModule("org.jetbrains.dokka:dokka-gradle-plugin:${requested.version}")
-                }
-            }
             when (requested.id.id) {
                  "com.replaymod.preprocess" -> {
                         useModule("com.github.replaymod:preprocessor:${requested.version}")
@@ -23,15 +19,14 @@ pluginManagement {
     }
 }
 
-rootProject.name = "ModernMenu"
 rootProject.buildFileName = "root.gradle.kts"
 
 // For preprocessor
 val appleVersion = listOf(
 
     // Forge (Legacy)
-    "1.8.9-forge",
-    "1.12.2-forge",
+    // "1.8.9-forge",
+    // "1.12.2-forge",
 
     // Fabric
     "1.17.1-fabric",
@@ -47,7 +42,7 @@ appleVersion.forEach { version ->
     include(":$version")
     project(":$version").apply {
         projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle"
+        buildFileName = "../../build.gradle.kts"
     }
 }
 
