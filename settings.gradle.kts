@@ -1,3 +1,5 @@
+includeBuild("build-logic")
+
 pluginManagement {
     repositories {
         maven("https://jitpack.io")
@@ -46,6 +48,7 @@ appleVersion.forEach { version ->
     }
 }
 
+/*
 gradle.settingsEvaluated{
     if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
         throw GradleException("This build requires JDK 17. You're currently using ${getJavaVersion()}. Please make sure you're on the correct version, and try again.")
@@ -56,3 +59,4 @@ fun getJavaVersion() {
     System.getProperty("java.home")
 }
 
+*/
