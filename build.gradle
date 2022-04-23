@@ -1,0 +1,38 @@
+buildscript {
+    def mcVersion
+    def mcVersionStr = project.name.tokenize('-')[0]
+    def (major, minor, patch) = project.name.tokenize('-')[0].tokenize('.')
+    mcVersion = "${major}${minor.padLeft(2, '0')}${(patch ?: '').padLeft(2, '0')}" as int
+    def forge = project.name.endsWith("-forge")
+    def fabric = project.name.endsWith("-fabric")
+    def quilt = project.name.endsWith("-quilt")
+    project.ext.mcVersion = mcVersion
+    project.ext.forge = forge
+    project.ext.fabric = fabric
+    project.ext.quilt = quilt
+
+    repositories {
+        mavenLocal()
+        maven { "https://plugins.gradle.org/m2/" }
+        mavenCentral()
+        maven { "https://maven.fabricmc.net/" }
+        maven {"https://maven.quiltmc.org/repository/release"}
+        maven {"https://maven.quiltmc.org/repository/snapshot"}
+
+        if (!fabric) {
+            maven {"https://maven.minecraftforge.net"}
+        }
+        maven { "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { "https://jitpack.io" }
+        maven {"https://repo.spongepowered.org/maven"}
+
+    }
+    dependencies {
+        if (quilt) {
+
+        }
+        if (fabric){
+
+        }
+    }
+}
