@@ -1,4 +1,4 @@
-# ModernMenu
+# Apple
 The most modern menu out for no reason.
 
 Note: This does work with ModMenu, we just use a different button in order to get to our configs.
