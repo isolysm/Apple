@@ -16,4 +16,7 @@ repositories {
 dependencies {
     implementation(gradleApi())
     implementation(localGroovy())
+
+    // TODO: Deprecate ASM to use chASM because I like collision handling.
+    
 }
