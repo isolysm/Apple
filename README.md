@@ -1,4 +1,4 @@
-# ModernMenu
+# Apple
 The most modern menu out for no reason. This is bundled with all of our mods, and is meant to serve the users of Quilt in
 most situations. 
 
@@ -14,5 +14,8 @@ This is **NOT** for outside use. We won't give support for this mod.
 
 ## Warnings
 This mod is very experimental! You will experience crashes. 
+
+This mod DOESN'T require Essential. Essential is add or not add for us, and isn't required for the 
+menu to run.
 
 This mod also uses OpenGL. You will crash if you are using some ancient system, so keep that in mind. 
