@@ -1,16 +1,12 @@
 # Apple
-The most modern menu out for no reason. This is bundled with all of our mods, and is meant to serve the users of Quilt in
-most situations. 
-
-Note: This does work with ModMenu, we just use a different button in order to get to our configs.
+A stupid easy framework designed for multiplatform use. This includes Forge, Fabric, and Quilt. Made with modernity in mind, this will provide
+a sleek experience for any modders to use in their configurations or menus.
 
 ## Why?
 Well, there's a few reasons behind this:
 
 * Isolysm's mods are planned having more fancy UIs.
 * This is mainly a project for me to expand upon our knowledge of LWJGL and OpenGL
-
-This is **NOT** for outside use. We won't give support for this mod. 
 
 ## Warnings
 This mod is very experimental! You will experience crashes. 
