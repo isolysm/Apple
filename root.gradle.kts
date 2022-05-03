@@ -1,11 +1,6 @@
-// Since we aren't using Essential's Gradle Plugin, and we are using Quilt, we need to figure out the entire
-// mappings issue ourselves.
-
 plugins {
     kotlin("jvm") version "1.6.21" apply false
     kotlin("plugin.serialization") version "1.6.21" apply false
-    // id("org.quiltmc.loom") version "0.12-SNAPSHOT"
-    // id("fabric-loom") version "0.11-SNAPSHOT"
     id("com.replaymod.preprocess") version "73d8bed"
 }
 

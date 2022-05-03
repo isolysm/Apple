@@ -7,6 +7,7 @@ pluginManagement {
         maven("https://maven.quiltmc.org/repository/release")
         maven("https://maven.quiltmc.org/repository/snapshot")
         maven("https://maven.minecraftforge.net")
+        maven("https://maven.architectury.dev/)
         maven("https://server.bbkr.space/artifactory/libs-release/")
         gradlePluginPortal()
     }
@@ -15,7 +16,7 @@ pluginManagement {
             when (requested.id.id) {
                  "com.replaymod.preprocess" -> {
                         useModule("com.github.replaymod:preprocessor:${requested.version}")
-                 }
+                }
             }
         }
     }
@@ -23,31 +24,52 @@ pluginManagement {
 
 rootProject.buildFileName = "root.gradle.kts"
 
-// For preprocessor
-val appleVersion = listOf(
+// All of the versions are to have their different directories
+// Both Forge and Fabric will use Essential's loom
+// Quilt will use architectury loom
 
-    // Forge (Legacy)
-    // "1.8.9-forge",
-    // "1.12.2-forge",
+val appleForgeVersions = listOf (
+    "1.8.9-forge",
+    "1.12.2-forge"
+)
 
-    // Fabric
+appleForgeVersions.forEach { version ->
+    include(":$forge")
+    project(":$forge").apply {
+        projectDir = file("forge")
+        buildFileName = "../forge/build.gradle.kts"
+    }
+}
+
+val appleFabricVersions = listOf (
+    "1.16.5-fabric",
     "1.17.1-fabric",
     "1.18.1-fabric",
-    "1.18.2-fabric",
+    "1.18.2-fabric"
+)
 
-    // Quilt
+appleFabricVersions.forEach { version ->
+    include(":$fabric")
+    project(":$fabric") {
+        projectDir = file("quilt")
+        buildFileName = "../fabric/build.gradle.kts"
+    }
+
+}
+
+val appleQuiltVersions = listOf(
     "1.18.1-quilt",
     "1.18.2-quilt"
 )
 
-appleVersion.forEach { version ->
-    include(":$version")
-    project(":$version").apply {
-        projectDir = file("versions/$version")
-        buildFileName = "../../build.gradle.kts"
+appleQuiltVersions.forEach { version ->
+    include(":$quilt")
+    project(":$quilt").apply {
+        projectDir = file("quilt")
+        buildFileName = "../quilt/build.gradle.kts"
     }
-}
 
+}
 /*
 gradle.settingsEvaluated{
     if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
